@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turnos UST</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style3.css">
 <body>
 
     <div class="container">
-        <h1>Planilla de Turnos del Equipo</h1>
+        <h1>Turnos Informática</h1>
 
         <div class="view-toggle">
             <button id="toggleWeek" class="active">Vista Semanal</button>
@@ -56,291 +56,287 @@
     </div>
 
     <script>
-        // ==========================================================
-        // --- 1. DATOS Y DEFINICIONES GLOBALES ---
-        // ==========================================================
-        
-        const fechaInicioCiclo = new Date('2025-10-20T00:00:00'); // Lunes 20 de Octubre de 2025
+        // ==========================================================
+        // --- 1. DATOS Y DEFINICIONES GLOBALES ---
+        // ==========================================================
+        
+        const fechaInicioCiclo = new Date('2025-10-20T00:00:00'); // Lunes 20 de Octubre de 2025
 
-        const personasRotativas = [
-            { nombre: 'Francisca', inicial: 'F' },
-            { nombre: 'Elena', inicial: 'E' },
-            { nombre: 'Sebastian', inicial: 'S' },
-            { nombre: 'Harold', inicial: 'H' }
-        ];
-        
-        const personasFijas = [
-            { nombre: 'Leonardo', inicial: 'L', turno: 'Fijo' },
-            { nombre: 'Juan Carlos', inicial: 'J', turno: 'SinTurno' }
-        ];
+        const personasRotativas = [
+            { nombre: 'Francisca', inicial: 'F' },
+            { nombre: 'Elena', inicial: 'E' },
+            { nombre: 'Sebastian', inicial: 'S' },
+            { nombre: 'Harold', inicial: 'H' }
+        ];
+        
+        const personasFijas = [
+            { nombre: 'Leonardo', inicial: 'L', turno: 'Fijo' },
+            { nombre: 'Juan Carlos', inicial: 'J', turno: 'SinTurno' }
+        ];
 
-        const detallesTurnos = {
-            'T1': { 'Lun': '08:00-16:00', 'Mar': '08:00-16:00', 'Mié': '08:00-16:00', 'Jue': '08:00-16:00', 'Vie': '08:00-13:30', 'Sáb': '08:00-13:00', 'Dom': 'Libre', colacion: '12:00-12:30' },
-            'T2': { 'Lun': '08:30-19:30', 'Mar': '08:30-19:30', 'Mié': '08:30-19:30', 'Jue': '08:30-19:30', 'Vie': '08:30-16:30', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '14:00-15:30' },
-            'T3': { 'Lun': '08:00-17:30', 'Mar': '08:00-17:30', 'Mié': '08:00-17:30', 'Jue': '08:00-17:30', 'Vie': '08:00-15:00', 'Sáb': '08:00-13:00', 'Dom': 'Libre', colacion: '13:00-14:30' },
-            'T4': { 'Lun': '13:00-22:00', 'Mar': '13:00-22:00', 'Mié': '13:00-22:00', 'Jue': '13:00-22:00', 'Vie': '15:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' },
-            'Fijo': { 'Lun': '17:30-22:00', 'Mar': '17:30-22:00', 'Mié': '17:30-22:00', 'Jue': '17:30-22:00', 'Vie': '17:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
-            'SinTurno': { 'Lun': '0h', 'Mar': '0h', 'Mié': '0h', 'Jue': '0h', 'Vie': '0h', 'Sáb': '0h', 'Dom': '0h', colacion: '' }
-        };
+        const detallesTurnos = {
+            'T1': { 'Lun': '08:00-16:00', 'Mar': '08:00-16:00', 'Mié': '08:00-16:00', 'Jue': '08:00-16:00', 'Vie': '08:00-13:30', 'Sáb': '08:00-13:00', 'Dom': 'Libre', colacion: '12:00-12:30' },
+            'T2': { 'Lun': '08:30-19:30', 'Mar': '08:30-19:30', 'Mié': '08:30-19:30', 'Jue': '08:30-19:30', 'Vie': '08:30-16:30', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '14:00-15:30' },
+            'T3': { 'Lun': '08:00-17:30', 'Mar': '08:00-17:30', 'Mié': '08:00-17:30', 'Jue': '08:00-17:30', 'Vie': '08:00-15:00', 'Sáb': '08:00-13:00', 'Dom': 'Libre', colacion: '13:00-14:30' },
+            'T4': { 'Lun': '13:00-22:00', 'Mar': '13:00-22:00', 'Mié': '13:00-22:00', 'Jue': '13:00-22:00', 'Vie': '15:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' },
+            'Fijo': { 'Lun': '17:30-22:00', 'Mar': '17:30-22:00', 'Mié': '17:30-22:00', 'Jue': '17:30-22:00', 'Vie': '17:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
+            'SinTurno': { 'Lun': '0h', 'Mar': '0h', 'Mié': '0h', 'Jue': '0h', 'Vie': '0h', 'Sáb': '0h', 'Dom': '0h', colacion: '' }
+        };
 
-        const cicloRotacion = [
-            ['T1', 'T2', 'T3', 'T4'], // Semana 1 (Índice 0)
-            ['T2', 'T3', 'T4', 'T1'], // Semana 2 (Índice 1)
-            ['T3', 'T4', 'T1', 'T2'], // Semana 3 (Índice 2)
-            ['T4', 'T1', 'T2', 'T3']  // Semana 4 (Índice 3)
-        ];
+        const cicloRotacion = [
+            ['T1', 'T2', 'T3', 'T4'], // Semana 1 (Índice 0)
+            ['T2', 'T3', 'T4', 'T1'], // Semana 2 (Índice 1)
+            ['T3', 'T4', 'T1', 'T2'], // Semana 3 (Índice 2)
+            ['T4', 'T1', 'T2', 'T3']  // Semana 4 (Índice 3)
+        ];
 
-        const diasSemanaLookup = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']; // JS getDay() es 0=Dom
-        const diasSemanaCorta = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']; // Para la vista semanal
+        const diasSemanaLookup = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']; // JS getDay() es 0=Dom
+        const diasSemanaCorta = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']; // Para la vista semanal
 
-        // ==========================================================
-        // --- 2. VARIABLES DE ESTADO ---
-        // ==========================================================
-        
-        let currentView = 'week';
-        let currentDisplayedMonday = getMonday(new Date());
-        let currentDisplayedMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        // ==========================================================
+        // --- 2. VARIABLES DE ESTADO ---
+        // ==========================================================
+        
+        let currentView = 'week';
+        let currentDisplayedMonday = getMonday(new Date());
+        let currentDisplayedMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 
-        // ==========================================================
-        // --- 3. LÓGICA DE CÁLCULO DE TURNOS ---
-        // ==========================================================
+        // ==========================================================
+        // --- 3. LÓGICA DE CÁLCULO DE TURNOS ---
+        // ==========================================================
 
-        function getMonday(d) {
-            d = new Date(d);
-            const day = d.getDay();
-            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-            const monday = new Date(d.getFullYear(), d.getMonth(), diff);
-            monday.setHours(0, 0, 0, 0);
-            return monday;
-        }
+        function getMonday(d) {
+            d = new Date(d);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(d.getFullYear(), d.getMonth(), diff);
+            monday.setHours(0, 0, 0, 0);
+            return monday;
+        }
 
-        function getSemanasDiferencia(fechaInicio, fechaFin) {
-            const msPorSemana = 1000 * 60 * 60 * 24 * 7;
-            const inicioSemana = getMonday(fechaInicio);
-            const finSemana = getMonday(fechaFin);
-            const diffMs = finSemana.getTime() - inicioSemana.getTime();
-            return Math.floor(diffMs / msPorSemana);
-        }
+        function getSemanasDiferencia(fechaInicio, fechaFin) {
+            const msPorSemana = 1000 * 60 * 60 * 24 * 7;
+            const inicioSemana = getMonday(fechaInicio);
+            const finSemana = getMonday(fechaFin);
+            const diffMs = finSemana.getTime() - inicioSemana.getTime();
+            return Math.floor(diffMs / msPorSemana);
+        }
 
-        function getShiftsForDay(date) {
-            const semanasPasadas = getSemanasDiferencia(fechaInicioCiclo, date);
-            const semanaCicloIndex = (semanasPasadas % 4 + 4) % 4; // Maneja negativos
-            const turnosDeLaSemana = cicloRotacion[semanaCicloIndex];
-            const diaDeLaSemanaStr = diasSemanaLookup[date.getDay()];
+        function getShiftsForDay(date) {
+            const semanasPasadas = getSemanasDiferencia(fechaInicioCiclo, date);
+            const semanaCicloIndex = (semanasPasadas % 4 + 4) % 4; // Maneja negativos
+            const turnosDeLaSemana = cicloRotacion[semanaCicloIndex];
+            const diaDeLaSemanaStr = diasSemanaLookup[date.getDay()];
 
-            let shifts = [];
+            let shifts = [];
 
-            personasRotativas.forEach((persona, pIndex) => {
-                const turno = turnosDeLaSemana[pIndex];
-                const horario = detallesTurnos[turno][diaDeLaSemanaStr];
-                const colacion = detallesTurnos[turno].colacion;
-                shifts.push({
-                    inicial: persona.inicial, nombre: persona.nombre, turno: turno,
-                    horario: horario, colacion: colacion, clase: `turno-${turno.replace('T', '')}`
-                });
-            });
+            personasRotativas.forEach((persona, pIndex) => {
+                const turno = turnosDeLaSemana[pIndex];
+                const horario = detallesTurnos[turno][diaDeLaSemanaStr];
+                const colacion = detallesTurnos[turno].colacion;
+                shifts.push({
+                    inicial: persona.inicial, nombre: persona.nombre, turno: turno,
+                    horario: horario, colacion: colacion, clase: `turno-${turno.replace('T', '')}`
+                });
+            });
 
-            personasFijas.forEach(persona => {
-                const turno = persona.turno;
-                const horario = detallesTurnos[turno][diaDeLaSemanaStr];
-                const colacion = detallesTurnos[turno].colacion;
-                let clase = 'no-shift';
-                if (turno === 'Fijo') clase = 'turno-fijo';
-á               shifts.push({
-                    inicial: persona.inicial, nombre: persona.nombre, turno: turno,
-                    horario: horario, colacion: colacion, clase: clase
-                });
-            });
-            return shifts;
-        }
-
-
-        // ==========================================================
-        // --- 4. RENDERIZACIÓN VISTA SEMANAL ---
-        // ==========================================================
-
-        function renderWeekCalendar() {
-            const shiftsGrid = document.getElementById('shiftsGrid');
-            const mobileView = document.getElementById('mobile-week-view');
-            shiftsGrid.innerHTML = '';
-            mobileView.innerHTML = ''; // Limpiar ambas vistas
-
-            const mondayOfCurrentWeek = new Date(currentDisplayedMonday);
-
-            // --- 4a. Renderizar Vista Escritorio (GRID) ---
-            let headerHtml = `<div class="grid-cell"></div>`;
-            for (let i = 0; i < 7; i++) {
-                const dia = new Date(mondayOfCurrentWeek);
-                dia.setDate(mondayOfCurrentWeek.getDate() + i);
-                headerHtml += `<div class="grid-cell">${diasSemanaCorta[i]} ${dia.getDate()} ${dia.toLocaleDateString('es-CL', { month: 'short' })}</div>`;
-            }
-            shiftsGrid.innerHTML += `<div class="grid-header">${headerHtml}</div>`;
-
-            const todasLasPersonas = [
-                ...personasRotativas.map(p => p.nombre),
-                ...personasFijas.map(p => p.nombre)
-            ];
-
-            todasLasPersonas.forEach(nombre => {
-                let rowHtml = `<div class="grid-cell"><strong>${nombre}</strong></div>`;
-                let mobileDaysHtml = ''; // HTML para la tarjeta móvil de esta persona
-
-                for (let i = 0; i < 7; i++) {
-                    const diaActual = new Date(mondayOfCurrentWeek);
-                    diaActual.setDate(mondayOfCurrentWeek.getDate() + i);
-                    
-                    const shiftsDelDia = getShiftsForDay(diaActual);
-                    const shiftPersona = shiftsDelDia.find(s => s.nombre === nombre);
-                    const colacionHtml = shiftPersona.colacion ? `<span class="colacion-text">Col: ${shiftPersona.colacion}</span>` : '';
-                    
-                    // ----- ¡AQUÍ ESTÁ LA CORRECCIÓN 1! -----
-                    const horarioLimpio = shiftPersona.horario;
-
-                    // HTML para Grid (Escritorio)
-                    let shiftBlockHtml = '';
-                    if (shiftPersona.horario === 'Libre') {
-                        shiftBlockHtml = `<div class="shift-block libre">Libre</div>`;
-                    } else if (shiftPersona.horario === '0h') {
-                        shiftBlockHtml = `<div class="shift-block no-shift">0h</div>`;
-                    } else {
-                        shiftBlockHtml = `
-                            <div class="shift-block ${shiftPersona.clase}">
-                                <span class="horario-text">${horarioLimpio}</span>
-                                ${colacionHtml}
-                            </div>`;
-                    }
-                    rowHtml += `<div class="grid-cell">${shiftBlockHtml}</div>`;
-
-                    // --- 4b. Renderizar Vista Celular (TARJETA) ---
-                    const diaSemanaNombre = diasSemanaCorta[i];
-                    const diaMesNum = diaActual.getDate();
-                    const diaMesNombre = diaActual.toLocaleDateString('es-CL', { month: 'short' });
-
-                    mobileDaysHtml += `<div class="day-entry">
-                        <strong>${diaSemanaNombre} ${diaMesNum} ${diaMesNombre}</strong>
-                        <div class="day-entry-shift ${shiftPersona.horario.toLowerCase()} ${shiftPersona.clase}">
-                            <span class="horario-text">${horarioLimpio}</span>
-                            ${colacionHtml}
-                        </div>
-                    </div>`;
-B               }
-                
-                shiftsGrid.innerHTML += `<div class="grid-row">${rowHtml}</div>`;
-                mobileView.innerHTML += `
-                    <div class="person-card">
-                        <div class="person-header">${nombre}</div>
-                        <div class="days-list">
-                            ${mobileDaysHtml}
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Actualizar rango de fechas
-            const endOfWeek = new Date(mondayOfCurrentWeek);
-            endOfWeek.setDate(mondayOfCurrentWeek.getDate() + 6);
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            document.getElementById('currentWeekRange').textContent = 
-                `${mondayOfCurrentWeek.toLocaleDateString('es-CL', options)} - ${endOfWeek.toLocaleDateString('es-CL', options)}`;
-        }
+            personasFijas.forEach(persona => {
+                const turno = persona.turno;
+                const horario = detallesTurnos[turno][diaDeLaSemanaStr];
+                const colacion = detallesTurnos[turno].colacion;
+                let clase = 'no-shift';
+                if (turno === 'Fijo') clase = 'turno-fijo';
+                shifts.push({
+                    inicial: persona.inicial, nombre: persona.nombre, turno: turno,
+                    horario: horario, colacion: colacion, clase: clase
+                });
+            });
+            return shifts;
+        }
 
 
-        // ==========================================================
-        // --- 5. RENDERIZACIÓN VISTA MENSUAL ---
-        // ==========================================================
+        // ==========================================================
+        // --- 4. RENDERIZACIÓN VISTA SEMANAL ---
+        // ==========================================================
 
-        function renderMonthCalendar() {
-            const grid = document.getElementById('calendar-days-grid');
-            grid.innerHTML = '';
-            
-            const year = currentDisplayedMonth.getFullYear();
-            const month = currentDisplayedMonth.getMonth();
+        function renderWeekCalendar() {
+            const shiftsGrid = document.getElementById('shiftsGrid');
+            const mobileView = document.getElementById('mobile-week-view');
+            shiftsGrid.innerHTML = '';
+            mobileView.innerHTML = ''; // Limpiar ambas vistas
 
-            document.getElementById('currentMonthName').textContent = 
-                currentDisplayedMonth.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase());
+            const mondayOfCurrentWeek = new Date(currentDisplayedMonday);
 
-O           const firstDayOfMonth = new Date(year, month, 1);
-            const firstDayToDisplay = getMonday(firstDayOfMonth);
-            let currentDay = new Date(firstDayToDisplay);
+            // --- 4a. Renderizar Vista Escritorio (GRID) ---
+            let headerHtml = `<div class="grid-cell"></div>`;
+            for (let i = 0; i < 7; i++) {
+                const dia = new Date(mondayOfCurrentWeek);
+                dia.setDate(mondayOfCurrentWeek.getDate() + i);
+                headerHtml += `<div class="grid-cell">${diasSemanaCorta[i]} ${dia.getDate()} ${dia.toLocaleDateString('es-CL', { month: 'short' })}</div>`;
+            }
+            shiftsGrid.innerHTML += `<div class="grid-header">${headerHtml}</div>`;
 
-            for (let i = 0; i < 42; i++) {
-                const esOtroMes = currentDay.getMonth() !== month;
-s               const dayShifts = getShiftsForDay(currentDay);
-                
-                let shiftsHtml = '';
-                dayShifts.forEach(shift => {
-                    let colacionTexto = '';
-                    if (shift.colacion && shift.horario !== 'Libre' && shift.horario !== '0h') {
-                        colacionTexto = ` (Col: ${shift.colacion})`;
-                    }
-                    // ----- ¡AQUÍ ESTÁ LA CORRECCIÓN 2! -----
-                    const textoTurno = `${shift.inicial}: ${shift.horario}${colacionTexto}`;
-                    shiftsHtml += `<div class="mini-shift ${shift.clase} ${shift.horario.toLowerCase()}" title="${textoTurno}">
-s                                   ${textoTurno}
-                                   </div>`;
-                });
+            const todasLasPersonas = [
+                ...personasRotativas.map(p => p.nombre),
+                ...personasFijas.map(p => p.nombre)
+            ];
 
-                grid.innerHTML += `
-                    <div class="day-cell ${esOtroMes ? 'other-month' : ''}">
-ind                     <div class="day-number">${currentDay.getDate()}</div>
-                        <div class="shifts-in-day">
-                            ${shiftsHtml}
-            s           </div>
-                    </div>
-                `;
-                currentDay.setDate(currentDay.getDate() + 1);
-            }
-        }
+            todasLasPersonas.forEach(nombre => {
+                let rowHtml = `<div class="grid-cell"><strong>${nombre}</strong></div>`;
+                let mobileDaysHtml = ''; // HTML para la tarjeta móvil de esta persona
 
-        // ==========================================================
-        // --- 6. MANEJADORES DE EVENTOS ---
-        // ==========================================================
+                for (let i = 0; i < 7; i++) {
+                    const diaActual = new Date(mondayOfCurrentWeek);
+                    diaActual.setDate(mondayOfCurrentWeek.getDate() + i);
+                    
+                    const shiftsDelDia = getShiftsForDay(diaActual);
+                    const shiftPersona = shiftsDelDia.find(s => s.nombre === nombre);
+                    const colacionHtml = (shiftPersona.colacion && shiftPersona.horario !== 'Libre' && shiftPersona.horario !== '0h') ? `<span class="colacion-text">Col: ${shiftPersona.colacion}</span>` : '';
+                    const horarioLimpio = shiftPersona.horario;
 
-        document.getElementById('toggleWeek').addEventListener('click', () => {
-            document.getElementById('toggleWeek').classList.add('active');
-            document.getElementById('toggleMonth').classList.remove('active');
-            document.getElementById('week-view-container').style.display = 'block';
-            document.getElementById('month-view-container').style.display = 'none';
-            currentDisplayedMonday = getMonday(currentDisplayedMonth);
-            renderWeekCalendar();
-    nd   });
+                    // HTML para Grid (Escritorio)
+                    let shiftBlockHtml = '';
+                    if (shiftPersona.horario === 'Libre') {
+                        shiftBlockHtml = `<div class="shift-block libre">Libre</div>`;
+                    } else if (shiftPersona.horario === '0h') {
+                        shiftBlockHtml = `<div class="shift-block no-shift">0h</div>`;
+                    } else {
+                        shiftBlockHtml = `
+                            <div class="shift-block ${shiftPersona.clase}">
+                                <span class="horario-text">${horarioLimpio}</span>
+                                ${colacionHtml}
+                            </div>`;
+                    }
+                    rowHtml += `<div class="grid-cell">${shiftBlockHtml}</div>`;
 
-        document.getElementById('toggleMonth').addEventListener('click', () => {
-            document.getElementById('toggleMonth').classList.add('active');
-            document.getElementById('toggleWeek').classList.remove('active');
-            document.getElementById('month-view-container').style.display = 'block';
-            document.getElementById('week-view-container').style.display = 'none';
-            currentDisplayedMonth = new Date(currentDisplayedMonday.getFullYear(), currentDisplayedMonday.getMonth(), 1);
-A           renderMonthCalendar();
-        });
+                    // --- 4b. Renderizar Vista Celular (TARJETA) ---
+                    const diaSemanaNombre = diasSemanaCorta[i];
+                    const diaMesNum = diaActual.getDate();
+                    const diaMesNombre = diaActual.toLocaleDateString('es-CL', { month: 'short' });
 
-        document.getElementById('prevWeekBtn').addEventListener('click', () => {
-            currentDisplayedMonday.setDate(currentDisplayedMonday.getDate() - 7);
-            renderWeekCalendar();
-        });
-        document.getElementById('nextWeekBtn').addEventListener('click', () => {
-i           currentDisplayedMonday.setDate(currentDisplayedMonday.getDate() + 7);
-            renderWeekCalendar();
-        });
+                    mobileDaysHtml += `<div class="day-entry">
+                        <strong>${diaSemanaNombre} ${diaMesNum} ${diaMesNombre}</strong>
+                        <div class="day-entry-shift ${shiftPersona.horario.toLowerCase()} ${shiftPersona.clase}">
+                            <span class="horario-text">${horarioLimpio}</span>
+                            ${colacionHtml}
+                        </div>
+                    </div>`;
+                }
+                
+                shiftsGrid.innerHTML += `<div class="grid-row">${rowHtml}</div>`;
+                mobileView.innerHTML += `
+                    <div class="person-card">
+                        <div class="person-header">${nombre}</div>
+                        <div class="days-list">
+                            ${mobileDaysHtml}
+                        </div>
+                    </div>
+                `;
+            });
 
-        document.getElementById('prevMonthBtn').addEventListener('click', () => {
-            currentDisplayedMonth.setMonth(currentDisplayedMonth.getMonth() - 1);
-            renderMonthCalendar();
-        });
-        document.getElementById('nextMonthBtn').addEventListener('click', () => {
-s           currentDisplayedMonth.setMonth(currentDisplayedMonth.getMonth() + 1);
-            renderMonthCalendar();
-        });
+            // Actualizar rango de fechas
+            const endOfWeek = new Date(mondayOfCurrentWeek);
+            endOfWeek.setDate(mondayOfCurrentWeek.getDate() + 6);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('currentWeekRange').textContent = 
+                `${mondayOfCurrentWeek.toLocaleDateString('es-CL', options)} - ${endOfWeek.toLocaleDateString('es-CL', options)}`;
+        }
 
-        // ==========================================================
-        // --- 7. INICIALIZACIÓN ---
-En       // ==========================================================
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            renderWeekCalendar();
-        });
-    </script>
+
+        // ==========================================================
+        // --- 5. RENDERIZACIÓN VISTA MENSUAL ---
+        // ==========================================================
+
+        function renderMonthCalendar() {
+            const grid = document.getElementById('calendar-days-grid');
+            grid.innerHTML = '';
+            
+            const year = currentDisplayedMonth.getFullYear();
+            const month = currentDisplayedMonth.getMonth();
+
+            document.getElementById('currentMonthName').textContent = 
+                currentDisplayedMonth.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase());
+
+            const firstDayOfMonth = new Date(year, month, 1);
+            const firstDayToDisplay = getMonday(firstDayOfMonth);
+            let currentDay = new Date(firstDayToDisplay);
+
+            for (let i = 0; i < 42; i++) {
+                const esOtroMes = currentDay.getMonth() !== month;
+                const dayShifts = getShiftsForDay(currentDay);
+                
+                let shiftsHtml = '';
+                dayShifts.forEach(shift => {
+                    let colacionTexto = '';
+                    if (shift.colacion && shift.horario !== 'Libre' && shift.horario !== '0h') {
+                        colacionTexto = ` (Col: ${shift.colacion})`;
+                    }
+                    const textoTurno = `${shift.inicial}: ${shift.horario}${colacionTexto}`;
+                    shiftsHtml += `<div class="mini-shift ${shift.clase} ${shift.horario.toLowerCase()}" title="${textoTurno}">
+                                     ${textoTurno}
+                                   </div>`;
+                });
+
+                grid.innerHTML += `
+                    <div class="day-cell ${esOtroMes ? 'other-month' : ''}">
+                        <div class="day-number">${currentDay.getDate()}</div>
+                        <div class="shifts-in-day">
+                            ${shiftsHtml}
+                        </div>
+                    </div>
+                `;
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+        }
+
+        // ==========================================================
+        // --- 6. MANEJADORES DE EVENTOS ---
+        // ==========================================================
+
+        document.getElementById('toggleWeek').addEventListener('click', () => {
+            document.getElementById('toggleWeek').classList.add('active');
+            document.getElementById('toggleMonth').classList.remove('active');
+            document.getElementById('week-view-container').style.display = 'block';
+            document.getElementById('month-view-container').style.display = 'none';
+            currentDisplayedMonday = getMonday(currentDisplayedMonth);
+            renderWeekCalendar();
+        });
+
+        document.getElementById('toggleMonth').addEventListener('click', () => {
+            document.getElementById('toggleMonth').classList.add('active');
+            document.getElementById('toggleWeek').classList.remove('active');
+            document.getElementById('month-view-container').style.display = 'block';
+            document.getElementById('week-view-container').style.display = 'none';
+            currentDisplayedMonth = new Date(currentDisplayedMonday.getFullYear(), currentDisplayedMonday.getMonth(), 1);
+            renderMonthCalendar();
+        });
+
+        document.getElementById('prevWeekBtn').addEventListener('click', () => {
+            currentDisplayedMonday.setDate(currentDisplayedMonday.getDate() - 7);
+            renderWeekCalendar();
+        });
+        document.getElementById('nextWeekBtn').addEventListener('click', () => {
+            currentDisplayedMonday.setDate(currentDisplayedMonday.getDate() + 7);
+            renderWeekCalendar();
+        });
+
+        document.getElementById('prevMonthBtn').addEventListener('click', () => {
+            currentDisplayedMonth.setMonth(currentDisplayedMonth.getMonth() - 1);
+            renderMonthCalendar();
+        });
+        document.getElementById('nextMonthBtn').addEventListener('click', () => {
+            currentDisplayedMonth.setMonth(currentDisplayedMonth.getMonth() + 1);
+            renderMonthCalendar();
+        });
+
+        // ==========================================================
+        // --- 7. INICIALIZACIÓN ---
+        // ==========================================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWeekCalendar();
+        });
+    </script>
+
 </body>
 </html>
-
-
