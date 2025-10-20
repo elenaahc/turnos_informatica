@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilla de Turnos Rotativos - Vista Semanal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Turnos del Equipo Informática</h1>
+
+        <div class="week-selector">
+            <button id="prevWeekBtn">&lt;</button>
+            <h2 id="currentWeekRange"></h2>
+            <button id="nextWeekBtn">&gt;</button>
+        </div>
+
+        <div class="shifts-grid" id="shiftsGrid">
+            </div>
+    </div>
+
+    <script>
+        // --- 1. Definición de Datos ---
+        
+        // La fecha de inicio del ciclo (Lunes de la Semana 1)
+        const fechaInicioCiclo = new Date('2025-10-20T00:00:00'); // Lunes 20 de Octubre de 2025
+
+        const nombresPersonas = ['Francisca', 'Elena', 'Sebastian', 'Harold', 'Leonardo', 'Juan Carlos'];
+        
+        // Horarios por turno y día, ya con colación descontada si aplica.
+        // Se define para cada día de la semana para que la visualización sea precisa.
+        const detallesTurnos = {
+            'T1': {
+                'Lun': '8:00-16:00', 'Mar': '8:00-16:00', 'Mié': '8:00-16:00', 'Jue': '8:00-16:00',
+                'Vie': '8:00-13:30', 'Sáb': '8:00-13:00', 'Dom': 'Libre'
+            },
+            'T2': {
+                'Lun': '8:30-19:30', 'Mar': '8:30-19:30', 'Mié': '8:30-19:30', 'Jue': '8:30-19:30',
+                'Vie': '8:30-16:30', 'Sáb': 'Libre', 'Dom': 'Libre'
+            },
+            'T3': {
+                'Lun': '8:00-17:30', 'Mar': '8:00-17:30', 'Mié': '8:00-17:30', 'Jue': '8:00-17:30',
+                'Vie': '8:00-15:00', 'Sáb': '8:00-13:00', 'Dom': 'Libre'
+            },
+            'T4': {
+                'Lun': '13:00-22:00', 'Mar': '13:00-22:00', 'Mié': '13:00-22:00', 'Jue': '13:00-22:00',
+                'Vie': '15:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre'
+            },
+            'Fijo': {
+                'Lun': '17:30-22:00', 'Mar': '17:30-22:00', 'Mié': '17:30-22:00', 'Jue': '17:30-22:00',
+                'Vie': '17:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre'
+            },
+            'SinTurno': { // Para Juan Carlos
+                'Lun': '0h', 'Mar': '0h', 'Mié': '0h', 'Jue': '0h',
+                'Vie': '0h', 'Sáb': '0h', 'Dom': '0h'
+            }
+        };
+
+        // El ciclo de 4 semanas para las 4 personas rotativas
+        const cicloRotacion = [
+            // Semana 1 (Índice 0): Francisca, Elena, Sebastian, Harold
+            ['T1', 'T2', 'T3', 'T4'],
+            // Semana 2 (Índice 1)
+            ['T2', 'T3', 'T4', 'T1'],
+            // Semana 3 (Índice 2)
+            ['T3', 'T4', 'T1', 'T2'],
+            // Semana 4 (Índice 3)
+            ['T4', 'T1', 'T2', 'T3']
+        ];
+
+        // Mapeo de días de la semana para fácil acceso
+        const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']; // JS getDay() es 0=Dom
+        const diasSemanaCorta = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+        // --- 2. Variables de Estado ---
+        let currentDisplayedMonday = getMonday(new Date()); // Por defecto, el Lunes de la semana actual
+
+        // --- 3. Lógica de Cálculo de Fechas y Turnos ---
+
+        function getMonday(d) {
+            d = new Date(d);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Ajusta al Lunes
+            const monday = new Date(d.getFullYear(), d.getMonth(), diff);
+            monday.setHours(0, 0, 0, 0); // Asegurarse de que sea el inicio del día
+            return monday;
+        }
+
+        function getSemanasDiferencia(fechaInicio, fechaFin) {
+            const msPorSemana = 1000 * 60 * 60 * 24 * 7;
+            const inicioSemana = getMonday(fechaInicio);
+            const finSemana = getMonday(fechaFin);
+            const diffMs = finSemana.getTime() - inicioSemana.getTime();
+            return Math.floor(diffMs / msPorSemana);
+        }
+
+        function renderCalendar() {
+            const shiftsGrid = document.getElementById('shiftsGrid');
+            shiftsGrid.innerHTML = ''; // Limpiar contenido anterior
+
+            const mondayOfCurrentWeek = new Date(currentDisplayedMonday);
+
+            // Generar encabezado de días
+            let headerHtml = `<div class="grid-cell"></div>`; // Esquina superior izquierda vacía
+            for (let i = 0; i < 7; i++) {
+                const dia = new Date(mondayOfCurrentWeek);
+                dia.setDate(mondayOfCurrentWeek.getDate() + i);
+                const diaNombre = diasSemanaCorta[i];
+                const diaNumero = dia.getDate();
+                const mesNombre = dia.toLocaleDateString('es-CL', { month: 'short' });
+                headerHtml += `<div class="grid-cell grid-header">${diaNombre} ${diaNumero} ${mesNombre}</div>`;
+            }
+            shiftsGrid.innerHTML += `<div class="grid-header">${headerHtml}</div>`;
+
+            // Calcular el índice de la semana dentro del ciclo de rotación
+            const semanasPasadasDesdeInicioCiclo = getSemanasDiferencia(fechaInicioCiclo, mondayOfCurrentWeek);
+            const semanaCicloIndex = (semanasPasadasDesdeInicioCiclo % 4 + 4) % 4; // +4)%4 para manejar negativos correctamente
+
+            const turnosDeEstaSemana = cicloRotacion[semanaCicloIndex];
+
+            // Generar filas de personas y sus turnos
+            nombresPersonas.forEach((persona, pIndex) => {
+                let rowHtml = `<div class="grid-cell"><strong>${persona}</strong></div>`; // Celda con el nombre de la persona
+
+                let turnoPersona;
+                let claseTurnoBase;
+
+                if (persona === 'Leonardo') {
+                    turnoPersona = 'Fijo';
+                    claseTurnoBase = 'turno-fijo';
+                } else if (persona === 'Juan Carlos') {
+                    turnoPersona = 'SinTurno';
+                    claseTurnoBase = 'no-shift';
+                } else {
+                    turnoPersona = turnosDeEstaSemana[pIndex];
+                    claseTurnoBase = `turno-${turnoPersona.replace('T', '')}`;
+                }
+
+                // Para cada día de la semana
+                for (let i = 0; i < 7; i++) {
+                    const diaActualNombre = diasSemanaCorta[i]; // 'Lun', 'Mar', etc.
+                    const horarioDia = detallesTurnos[turnoPersona][diaActualNombre];
+                    
+                    let shiftBlockHtml;
+                    if (horarioDia === 'Libre') {
+                        shiftBlockHtml = `<div class="shift-block libre">Libre</div>`;
+                    } else if (horarioDia === '0h') {
+                        shiftBlockHtml = `<div class="shift-block no-shift">0h</div>`;
+                    } else {
+                        shiftBlockHtml = `<div class="shift-block ${claseTurnoBase}">${horarioDia}</div>`;
+                    }
+                    rowHtml += `<div class="grid-cell">${shiftBlockHtml}</div>`;
+                }
+                shiftsGrid.innerHTML += `<div class="grid-row">${rowHtml}</div>`;
+            });
+
+            // Actualizar rango de fechas en el selector
+            const endOfWeek = new Date(mondayOfCurrentWeek);
+            endOfWeek.setDate(mondayOfCurrentWeek.getDate() + 6);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('currentWeekRange').textContent = 
+                `${mondayOfCurrentWeek.toLocaleDateString('es-CL', options)} - ${endOfWeek.toLocaleDateString('es-CL', options)}`;
+        }
+
+        // --- 4. Event Listeners para el Selector de Semana ---
+
+        document.getElementById('prevWeekBtn').addEventListener('click', () => {
+            currentDisplayedMonday.setDate(currentDisplayedMonday.getDate() - 7);
+            renderCalendar();
+        });
+
+        document.getElementById('nextWeekBtn').addEventListener('click', () => {
+            currentDisplayedMonday.setDate(currentDisplayedMonday.getDate() + 7);
+            renderCalendar();
+        });
+
+        // --- 5. Inicialización ---
+        document.addEventListener('DOMContentLoaded', renderCalendar);
+    </script>
+
+</body>
+</html>

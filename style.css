@@ -1,0 +1,103 @@
+body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px; /* Un poco más ancho para los 7 días */
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 20px;
+        }
+
+        /* Selector de Semana */
+        .week-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px; /* Espacio entre el título y los botones */
+        }
+        .week-selector button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #5f6368;
+            transition: background-color 0.2s;
+        }
+        .week-selector button:hover {
+            background-color: #d0d0d0;
+        }
+        .week-selector h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.4em;
+        }
+
+        /* Tabla de Turnos */
+        .shifts-grid {
+            display: grid;
+            grid-template-columns: 150px repeat(7, 1fr); /* Columna de Persona + 7 días */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        .grid-header, .grid-row {
+            display: contents; /* Permite que los elementos se posicionen directamente en el grid */
+        }
+
+        .grid-cell {
+            padding: 10px;
+            border: 1px solid #eee;
+            text-align: center;
+            display: flex; /* Para centrar contenido verticalmente */
+            align-items: center;
+            justify-content: center;
+            min-height: 50px; /* Altura mínima para cada bloque */
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .grid-header .grid-cell {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            color: #555;
+            border-bottom: 2px solid #ddd;
+        }
+        .grid-header .grid-cell:first-child {
+            background-color: #f8f8f8;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Estilos específicos para los bloques de turno */
+        .shift-block {
+            border-radius: 4px;
+            padding: 5px 8px;
+            width: calc(100% - 10px); /* Ajuste de padding */
+            box-sizing: border-box;
+            font-weight: 500;
+            color: #333;
+            text-shadow: 0 0 1px rgba(255,255,255,0.7);
+        }
+        .shift-block.turno-1 { background-color: #bbdefb; border: 1px solid #64b5f6; } /* Azul claro */
+        .shift-block.turno-2 { background-color: #c8e6c9; border: 1px solid #81c784; } /* Verde claro */
+        .shift-block.turno-3 { background-color: #fff9c4; border: 1px solid #ffee58; } /* Amarillo claro */
+        .shift-block.turno-4 { background-color: #ffccbc; border: 1px solid #ff8a65; } /* Naranja claro */
+        .shift-block.turno-fijo { background-color: #e1bee7; border: 1px solid #ba68c8; } /* Morado claro */
+        .shift-block.libre { background-color: #f0f0f0; color: #777; border: 1px dashed #ccc; }
+        .shift-block.no-shift { background-color: #ffffff; color: #ccc; border: 1px solid #eee; } /* Para "0h" o días sin turno */
