@@ -6,7 +6,7 @@ body {
             padding: 20px;
         }
         .container {
-            max-width: 1200px; /* Un poco más ancho para los 7 días */
+            max-width: 1200px;
             margin: 0 auto;
             background: #fff;
             border-radius: 8px;
@@ -20,15 +20,45 @@ body {
             margin-bottom: 20px;
         }
 
-        /* Selector de Semana */
-        .week-selector {
+        /* --- CONTROLES DE VISTA --- */
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .view-toggle button {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            color: #555;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .view-toggle button:first-child {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+        .view-toggle button:last-child {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-left: none;
+        }
+        .view-toggle button.active {
+            background-color: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+
+        /* --- NAVEGADOR (Semana y Mes) --- */
+        .navigator {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 25px;
-            gap: 15px; /* Espacio entre el título y los botones */
+            gap: 15px;
         }
-        .week-selector button {
+        .navigator button {
             background-color: #e0e0e0;
             border: none;
             padding: 8px 15px;
@@ -38,66 +68,139 @@ body {
             color: #5f6368;
             transition: background-color 0.2s;
         }
-        .week-selector button:hover {
+        .navigator button:hover {
             background-color: #d0d0d0;
         }
-        .week-selector h2 {
+        .navigator h2 {
             margin: 0;
             color: #333;
             font-size: 1.4em;
+            width: 350px; /* Ancho para que no "salte" */
+            text-align: center;
+        }
+        .navigator#month-navigator h2 {
+             width: 250px; /* Menos ancho para el nombre del mes */
         }
 
-        /* Tabla de Turnos */
+        /* --- VISTA SEMANAL --- */
+        #week-view-container {
+            /* Se muestra por defecto */
+        }
         .shifts-grid {
             display: grid;
-            grid-template-columns: 150px repeat(7, 1fr); /* Columna de Persona + 7 días */
+            grid-template-columns: 150px repeat(7, 1fr);
             border: 1px solid #ddd;
             border-radius: 5px;
             overflow: hidden;
-            background-color: #fff;
         }
-
-        .grid-header, .grid-row {
-            display: contents; /* Permite que los elementos se posicionen directamente en el grid */
-        }
-
+        .grid-header, .grid-row { display: contents; }
         .grid-cell {
             padding: 10px;
             border: 1px solid #eee;
             text-align: center;
-            display: flex; /* Para centrar contenido verticalmente */
+            display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 50px; /* Altura mínima para cada bloque */
+            min-height: 50px;
             font-size: 0.9em;
-            color: #333;
         }
-
-        .grid-header .grid-cell {
+        .shifts-grid .grid-header .grid-cell {
             background-color: #f0f0f0;
             font-weight: bold;
             color: #555;
             border-bottom: 2px solid #ddd;
         }
-        .grid-header .grid-cell:first-child {
+        .shifts-grid .grid-header .grid-cell:first-child {
             background-color: #f8f8f8;
             border-bottom: 2px solid #ddd;
         }
-
-        /* Estilos específicos para los bloques de turno */
         .shift-block {
             border-radius: 4px;
             padding: 5px 8px;
-            width: calc(100% - 10px); /* Ajuste de padding */
+            width: calc(100% - 10px);
             box-sizing: border-box;
             font-weight: 500;
-            color: #333;
-            text-shadow: 0 0 1px rgba(255,255,255,0.7);
+            /* Flex para alinear horario y colación */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
         }
-        .shift-block.turno-1 { background-color: #bbdefb; border: 1px solid #64b5f6; } /* Azul claro */
-        .shift-block.turno-2 { background-color: #c8e6c9; border: 1px solid #81c784; } /* Verde claro */
-        .shift-block.turno-3 { background-color: #fff9c4; border: 1px solid #ffee58; } /* Amarillo claro */
-        .shift-block.turno-4 { background-color: #ffccbc; border: 1px solid #ff8a65; } /* Naranja claro */
-        .shift-block.turno-fijo { background-color: #e1bee7; border: 1px solid #ba68c8; } /* Morado claro */
-        .shift-block.libre { background-color: #f0f0f0; color: #777; border: 1px dashed #ccc; }
-        .shift-block.no-shift { background-color: #ffffff; color: #ccc; border: 1px solid #eee; } /* Para "0h" o días sin turno */
+        .horario-text {
+            font-weight: 500;
+        }
+        .colacion-text { /* Texto de colación en vista semanal */
+            font-size: 0.85em;
+            font-weight: 400;
+            color: #555;
+        }
+
+        
+        /* --- VISTA MENSUAL --- */
+        #month-view-container {
+            display: none; /* Oculto por defecto */
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border: 1px solid #ddd;
+        }
+        .calendar-grid .grid-header {
+            display: contents;
+        }
+        .calendar-grid .grid-header .grid-cell {
+            text-align: center;
+            font-weight: bold;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-bottom: 2px solid #ddd;
+        }
+        .day-cell {
+            border: 1px solid #eee;
+            min-height: 120px;
+            padding: 5px;
+            font-size: 0.8em;
+            background-color: #fff;
+        }
+        .day-cell.other-month {
+            background-color: #f9f9f9;
+        }
+        .day-cell .day-number {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+            text-align: right;
+            padding-right: 5px;
+        }
+        .day-cell.other-month .day-number {
+            color: #aaa;
+        }
+        .shifts-in-day {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 5px;
+        }
+        .mini-shift {
+            border-radius: 3px;
+            padding: 3px 5px;
+            font-weight: 500;
+            font-size: 0.85em; /* Reducido para más texto */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mini-shift.libre, .mini-shift.no-shift {
+            display: none; /* No mostrar "Libre" o "0h" en vista mensual */
+        }
+
+        /* --- Colores de Turnos (Usados por ambas vistas) --- */
+        .turno-1 { background-color: #bbdefb; border: 1px solid #90caf9; color: #1e3a5f; }
+        .turno-2 { background-color: #c8e6c9; border: 1px solid #a5d6a7; color: #1b5e20; }
+        .turno-3 { background-color: #fff9c4; border: 1px solid #fff176; color: #5f4300; }
+        .turno-4 { background-color: #ffccbc; border: 1px solid #ffab91; color: #5d2013; }
+        .turno-fijo { background-color: #e1bee7; border: 1px solid #ce93d8; color: #4a148c; }
+        .libre { background-color: #f0f0f0; color: #777; border: 1px dashed #ccc; }
+        .no-shift { background-color: #ffffff; color: #ccc; border: 1px solid #eee; }
