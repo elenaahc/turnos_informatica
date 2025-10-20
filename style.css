@@ -18,6 +18,7 @@ body {
             text-align: center;
             color: #1a73e8;
             margin-bottom: 20px;
+            font-size: 1.8em;
         }
 
         /* --- CONTROLES DE VISTA --- */
@@ -75,17 +76,14 @@ body {
             margin: 0;
             color: #333;
             font-size: 1.4em;
-            width: 350px; /* Ancho para que no "salte" */
+            width: 350px;
             text-align: center;
         }
         .navigator#month-navigator h2 {
-             width: 250px; /* Menos ancho para el nombre del mes */
+             width: 250px;
         }
 
-        /* --- VISTA SEMANAL --- */
-        #week-view-container {
-            /* Se muestra por defecto */
-        }
+        /* --- VISTA SEMANAL (ESCRITORIO) --- */
         .shifts-grid {
             display: grid;
             grid-template-columns: 150px repeat(7, 1fr);
@@ -120,35 +118,85 @@ body {
             width: calc(100% - 10px);
             box-sizing: border-box;
             font-weight: 500;
-            /* Flex para alinear horario y colación */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 2px;
         }
-        .horario-text {
-            font-weight: 500;
-        }
-        .colacion-text { /* Texto de colación en vista semanal */
+        .horario-text { font-weight: 500; }
+        .colacion-text {
             font-size: 0.85em;
             font-weight: 400;
             color: #555;
         }
 
+        /* --- VISTA SEMANAL (CELULAR) - TIPO "TARJETA" --- */
+        #mobile-week-view {
+            display: none; /* Oculto en escritorio */
+            width: 100%;
+        }
+        .person-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .person-header {
+            background: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .days-list {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .day-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        .day-entry:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .day-entry strong {
+            color: #333;
+            width: 100px; /* Ancho fijo para el día */
+        }
+        .day-entry-shift {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+            flex-grow: 1;
+        }
+        .day-entry-shift .horario-text { font-size: 0.95em; }
+        .day-entry-shift .colacion-text { font-size: 0.8em; color: #666; }
         
-        /* --- VISTA MENSUAL --- */
+        /* --- VISTA MENSUAL (ESCRITORIO) --- */
         #month-view-container {
             display: none; /* Oculto por defecto */
+        }
+        /* Contenedor para scroll horizontal en móvil */
+        .grid-wrapper {
+            width: 100%;
+            overflow-x: auto;
         }
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             border: 1px solid #ddd;
         }
-        .calendar-grid .grid-header {
-            display: contents;
-        }
+        .calendar-grid .grid-header { display: contents; }
         .calendar-grid .grid-header .grid-cell {
             text-align: center;
             font-weight: bold;
@@ -156,6 +204,7 @@ body {
             padding: 10px;
             border: 1px solid #eee;
             border-bottom: 2px solid #ddd;
+            min-width: 120px; /* Ancho mínimo de columna */
         }
         .day-cell {
             border: 1px solid #eee;
@@ -163,10 +212,9 @@ body {
             padding: 5px;
             font-size: 0.8em;
             background-color: #fff;
+            min-width: 120px; /* Ancho mínimo de columna */
         }
-        .day-cell.other-month {
-            background-color: #f9f9f9;
-        }
+        .day-cell.other-month { background-color: #f9f9f9; }
         .day-cell .day-number {
             font-weight: bold;
             font-size: 1.1em;
@@ -174,9 +222,7 @@ body {
             text-align: right;
             padding-right: 5px;
         }
-        .day-cell.other-month .day-number {
-            color: #aaa;
-        }
+        .day-cell.other-month .day-number { color: #aaa; }
         .shifts-in-day {
             display: flex;
             flex-direction: column;
@@ -187,16 +233,16 @@ body {
             border-radius: 3px;
             padding: 3px 5px;
             font-weight: 500;
-            font-size: 0.85em; /* Reducido para más texto */
+            font-size: 0.85em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .mini-shift.libre, .mini-shift.no-shift {
-            display: none; /* No mostrar "Libre" o "0h" en vista mensual */
+            display: none;
         }
 
-        /* --- Colores de Turnos (Usados por ambas vistas) --- */
+        /* --- Colores de Turnos --- */
         .turno-1 { background-color: #bbdefb; border: 1px solid #90caf9; color: #1e3a5f; }
         .turno-2 { background-color: #c8e6c9; border: 1px solid #a5d6a7; color: #1b5e20; }
         .turno-3 { background-color: #fff9c4; border: 1px solid #fff176; color: #5f4300; }
@@ -204,3 +250,50 @@ body {
         .turno-fijo { background-color: #e1bee7; border: 1px solid #ce93d8; color: #4a148c; }
         .libre { background-color: #f0f0f0; color: #777; border: 1px dashed #ccc; }
         .no-shift { background-color: #ffffff; color: #ccc; border: 1px solid #eee; }
+
+        /* =========================================== */
+        /* --- REGLAS PARA CELULAR (DISEÑO RESPONSIVE) --- */
+        /* =========================================== */
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            .navigator h2 {
+                font-size: 1.1em;
+                width: auto; /* Ancho flexible en móvil */
+                flex-grow: 1; /* Ocupa espacio disponible */
+            }
+            .navigator {
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            .view-toggle button {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+
+            /* --- Ocultar/Mostrar vistas --- */
+            
+            #week-view-container .shifts-grid {
+                display: none; /* Ocultar la tabla ancha en celular */
+            }
+            #week-view-container #mobile-week-view {
+                display: block; /* Mostrar la lista de tarjetas en celular */
+            }
+
+            /* En vista mensual, el .grid-wrapper con overflow-x: auto ya se encarga */
+            .calendar-grid, .day-cell, .calendar-grid .grid-header .grid-cell {
+                min-width: 110px; /* Columnas un poco más angostas en móvil */
+                font-size: 0.75em;
+            }
+            .day-cell {
+                min-height: 100px;
+            }
+        }
