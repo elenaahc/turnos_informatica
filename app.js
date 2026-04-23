@@ -26,7 +26,7 @@ const detallesTurnos = {
     'T2': { 'Lun': 'Suspendido', 'Mar': 'Suspendido', 'Mié': 'Suspendido', 'Jue': 'Suspendido', 'Vie': 'Suspendido', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
     'T3': { 'Lun': '08:00-17:30', 'Mar': '08:00-17:30', 'Mié': '08:00-17:30', 'Jue': '08:00-17:30', 'Vie': '08:00-17:30', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '13:00-14:00' },
     'T4': { 'Lun': '13:00-22:00', 'Mar': '13:00-22:00', 'Mié': '13:00-22:00', 'Jue': '13:00-22:00', 'Vie': '15:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' },
-    'TurnoNico': { 'Lun': '17:30-22:00', 'Mar': '17:30-22:00', 'Mié': '17:30-22:00', 'Jue': '17:30-22:00', 'Vie': '17:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' }, // Turno fijo
+    'TurnoNico': { 'Lun': '13:30-22:00', 'Mar': '13:30-22:00', 'Mié': '13:30-22:00', 'Jue': '13:30-22:00', 'Vie': '13:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' }, // Turno fijo
     'Verano': { 'Lun': 'Suspendido', 'Mar': 'Suspendido', 'Mié': 'Suspendido', 'Jue': 'Suspendido', 'Vie': 'Suspendido', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
     'SinTurno': { 'Lun': '0h', 'Mar': '0h', 'Mié': '0h', 'Jue': '0h', 'Vie': '0h', 'Sáb': '0h', 'Dom': '0h', colacion: '' }
 };
