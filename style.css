@@ -298,3 +298,23 @@ body {
                 min-height: 100px;
             }
         }
+
+/* Estilo para la etiqueta MR */
+.label-mr {
+    font-size: 0.7em;
+    background-color: rgba(255, 255, 255, 0.6); /* Fondo semi-transparente */
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+    margin-top: 2px;
+    color: #333;
+    display: inline-block;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Para la vista mensual (más compacta) */
+.label-mr-mini {
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-left: 3px;
+}
