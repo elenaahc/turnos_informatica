@@ -3,31 +3,34 @@
 // ==========================================================
 
 // Nueva fecha de inicio del ciclo de rotación
-const fechaInicioCiclo = new Date('2026-03-02T00:00:00');
+const fechaInicioCiclo = new Date('2026-05-18T00:00:00');
 
 // Ordenados según el turno que toman en la primera semana (Semana 1)
 const personasRotativas = [
-    { nombre: 'Harold', inicial: 'H' },    // Tomará el primer turno del arreglo (T1)
-    { nombre: 'Elena', inicial: 'E' },     // Tomará el segundo turno del arreglo (T3)
-    { nombre: 'Francisca', inicial: 'F' }  // Tomará el tercer turno del arreglo (T4)
+    { nombre: 'Elena', inicial: 'E' }, // Tomará el primer turno del arreglo (T1)
+    { nombre: 'Francisca', inicial: 'F' }, // Tomará el segundo turno del arreglo (T2)
+    { nombre: 'Nicolás', inicial: 'N' } // Tomará el tercer turno del arreglo (T3)
+    { nombre: 'Harold', inicial: 'H' },    // Tomará el cuarto turno del arreglo (T4)
+        
+      
 ];
 
 // Nicolás es el único turno fijo
-const personasFijas = [
-    { nombre: 'Nicolas', inicial: 'N', turno: 'TurnoNico' }
-];
+//const personasFijas = [
+//    { nombre: 'Nicolas', inicial: 'N', turno: 'TurnoNico' }
+//];
 
 // Rango de Verano (mantenido por si es necesario a futuro)
 const veranoInicio = new Date('2026-01-05T00:00:00');
 const veranoFin = new Date('2026-03-01T23:59:59');
 
 const detallesTurnos = {
-    'T1': { 'Lun': '08:00-16:00', 'Mar': '08:00-16:00', 'Mié': '08:00-16:00', 'Jue': '08:00-16:00', 'Vie': '08:00-13:30', 'Sáb': '08:00-13:00', 'Dom': 'Libre', colacion: '12:00-12:30' },
-    'T2': { 'Lun': 'Suspendido', 'Mar': 'Suspendido', 'Mié': 'Suspendido', 'Jue': 'Suspendido', 'Vie': 'Suspendido', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
-    'T3': { 'Lun': '08:00-17:30', 'Mar': '08:00-17:30', 'Mié': '08:00-17:30', 'Jue': '08:00-17:30', 'Vie': '08:00-17:30', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '13:00-14:00' },
-    'T4': { 'Lun': '13:00-22:00', 'Mar': '13:00-22:00', 'Mié': '13:00-22:00', 'Jue': '13:00-22:00', 'Vie': '15:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' },
-    'TurnoNico': { 'Lun': '13:30-22:00', 'Mar': '13:30-22:00', 'Mié': '13:30-22:00', 'Jue': '13:30-22:00', 'Vie': '13:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' }, // Turno fijo
-    'Verano': { 'Lun': 'Suspendido', 'Mar': 'Suspendido', 'Mié': 'Suspendido', 'Jue': 'Suspendido', 'Vie': 'Suspendido', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
+    'T1': { 'Lun': '08:00-16:00', 'Mar': '08:00-16:00', 'Mié': '08:00-16:00', 'Jue': '08:00-16:00', 'Vie': '08:00-13:00', 'Sáb': '08:00-13:00', 'Dom': 'Libre', colacion: '12:00-12:30' },
+    'T2': { 'Lun': '08:30-19:00', 'Mar': '08:30-19:00', 'Mié': '08:30-19:00', 'Jue': '08:30-19:00', 'Vie': '08:30-16:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '14:00-15:30' },
+    'T3': { 'Lun': '08:30-19:00', 'Mar': '08:30-19:00', 'Mié': '08:30-19:00', 'Jue': '08:30-19:00', 'Vie': '08:00-17:30', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '13:00-14:30' },
+    'T4': { 'Lun': '13:00-22:00', 'Mar': '13:00-22:00', 'Mié': '13:00-22:00', 'Jue': '13:00-22:00', 'Vie': '16:00-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' },
+    //'TurnoNico': { 'Lun': '13:30-22:00', 'Mar': '13:30-22:00', 'Mié': '13:30-22:00', 'Jue': '13:30-22:00', 'Vie': '13:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' }, // Turno fijo
+    //'Verano': { 'Lun': 'Suspendido', 'Mar': 'Suspendido', 'Mié': 'Suspendido', 'Jue': 'Suspendido', 'Vie': 'Suspendido', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
     'SinTurno': { 'Lun': '0h', 'Mar': '0h', 'Mié': '0h', 'Jue': '0h', 'Vie': '0h', 'Sáb': '0h', 'Dom': '0h', colacion: '' }
 };
 
@@ -38,9 +41,10 @@ const especiales = {
 
 // Nuevo ciclo de rotación (solo 3 semanas porque no hay T2)
 const cicloRotacion = [
-    ['T1', 'T3', 'T4'], // Semana 1: Harold (T1), Elena (T3), Francisca (T4)
-    ['T3', 'T4', 'T1'], // Semana 2: Harold (T3), Elena (T4), Francisca (T1)
-    ['T4', 'T1', 'T3']  // Semana 3: Harold (T4), Elena (T1), Francisca (T3)
+    ['T1', 'T2', 'T3','T4'], // Semana 1: Elena (T1), Francisca (T2), Nicolás (T3), Harold (T4)
+    ['T2', 'T3', 'T4','T1'],
+    ['T3', 'T4', 'T1','T2'], // Semana 2: Harold (T3), Elena (T4), Francisca (T1)
+    ['T4', 'T1', 'T2','T3']  // Semana 3: Harold (T4), Elena (T1), Francisca (T3)
 ];
 
 const diasSemanaLookup = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
