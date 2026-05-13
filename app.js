@@ -2,49 +2,32 @@
 // --- 1. DATOS Y DEFINICIONES GLOBALES ---
 // ==========================================================
 
-// Nueva fecha de inicio del ciclo de rotación
 const fechaInicioCiclo = new Date('2026-05-18T00:00:00');
 
-// Ordenados según el turno que toman en la primera semana (Semana 1)
 const personasRotativas = [
-    { nombre: 'Elena', inicial: 'E' }, // Tomará el primer turno del arreglo (T1)
-    { nombre: 'Francisca', inicial: 'F' }, // Tomará el segundo turno del arreglo (T2)
-    { nombre: 'Nicolás', inicial: 'N' }, // Tomará el tercer turno del arreglo (T3)
-    { nombre: 'Harold', inicial: 'H' },    // Tomará el cuarto turno del arreglo (T4)
-        
-      
+    { nombre: 'Elena', inicial: 'E' },
+    { nombre: 'Francisca', inicial: 'F' },
+    { nombre: 'Nicolás', inicial: 'N' },
+    { nombre: 'Harold', inicial: 'H' },
 ];
 
-// Nicolás es el único turno fijo
-//const personasFijas = [
-//    { nombre: 'Nicolas', inicial: 'N', turno: 'TurnoNico' }
-//];
-
-// Rango de Verano (mantenido por si es necesario a futuro)
-const veranoInicio = new Date('2026-01-05T00:00:00');
-const veranoFin = new Date('2026-03-01T23:59:59');
+const personasFijas = [];
 
 const detallesTurnos = {
     'T1': { 'Lun': '08:00-16:00', 'Mar': '08:00-16:00', 'Mié': '08:00-16:00', 'Jue': '08:00-16:00', 'Vie': '08:00-13:00', 'Sáb': '08:00-13:00', 'Dom': 'Libre', colacion: '12:00-12:30' },
     'T2': { 'Lun': '08:30-19:00', 'Mar': '08:30-19:00', 'Mié': '08:30-19:00', 'Jue': '08:30-19:00', 'Vie': '08:30-16:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '14:00-15:30' },
     'T3': { 'Lun': '08:30-19:00', 'Mar': '08:30-19:00', 'Mié': '08:30-19:00', 'Jue': '08:30-19:00', 'Vie': '08:00-17:30', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '13:00-14:30' },
     'T4': { 'Lun': '13:00-22:00', 'Mar': '13:00-22:00', 'Mié': '13:00-22:00', 'Jue': '13:00-22:00', 'Vie': '16:00-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' },
-    //'TurnoNico': { 'Lun': '13:30-22:00', 'Mar': '13:30-22:00', 'Mié': '13:30-22:00', 'Jue': '13:30-22:00', 'Vie': '13:30-22:00', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '17:00-17:30' }, // Turno fijo
-    //'Verano': { 'Lun': 'Suspendido', 'Mar': 'Suspendido', 'Mié': 'Suspendido', 'Jue': 'Suspendido', 'Vie': 'Suspendido', 'Sáb': 'Libre', 'Dom': 'Libre', colacion: '' },
     'SinTurno': { 'Lun': '0h', 'Mar': '0h', 'Mié': '0h', 'Jue': '0h', 'Vie': '0h', 'Sáb': '0h', 'Dom': '0h', colacion: '' }
 };
 
-// Excepciones y horarios especiales (puedes limpiar o actualizar esto según necesites)
-const especiales = {
-    // Ejemplo: '2026-03-10': { 'Elena': '09:00-13:30' }
-};
+const especiales = {};
 
-// Nuevo ciclo de rotación (solo 3 semanas porque no hay T2)
 const cicloRotacion = [
-    ['T1', 'T2', 'T3','T4'], // Semana 1: Elena (T1), Francisca (T2), Nicolás (T3), Harold (T4)
-    ['T2', 'T3', 'T4','T1'],
-    ['T3', 'T4', 'T1','T2'], // Semana 2: Harold (T3), Elena (T4), Francisca (T1)
-    ['T4', 'T1', 'T2','T3']  // Semana 3: Harold (T4), Elena (T1), Francisca (T3)
+    ['T1', 'T2', 'T3', 'T4'],
+    ['T2', 'T3', 'T4', 'T1'],
+    ['T3', 'T4', 'T1', 'T2'],
+    ['T4', 'T1', 'T2', 'T3']
 ];
 
 const diasSemanaLookup = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -73,48 +56,26 @@ function getSemanasDiferencia(fechaInicio, fechaFin) {
 function getShiftsForDay(date) {
     const fechaStr = date.toISOString().split('T')[0];
     const diaDeLaSemanaStr = diasSemanaLookup[date.getDay()];
-    const esPeriodoVerano = date >= veranoInicio && date <= veranoFin;
-
-    // Cálculo del índice para una rotación de 3 semanas
+    
     const semanasPasadas = getSemanasDiferencia(fechaInicioCiclo, date);
-    const semanaCicloIndex = (semanasPasadas % 3 + 3) % 3; // Módulo 3 en lugar de 4
+    const cantidadSemanas = cicloRotacion.length;
+    const semanaCicloIndex = ((semanasPasadas % cantidadSemanas) + cantidadSemanas) % cantidadSemanas; 
     const turnosDeLaSemana = cicloRotacion[semanaCicloIndex];
 
     let shifts = [];
 
-    // Asignación de turnos rotativos
     personasRotativas.forEach((persona, pIndex) => {
-        let horario, colacion, clase, turnoLabel;
-
-        if (especiales[fechaStr] && especiales[fechaStr][persona.nombre]) {
-            horario = especiales[fechaStr][persona.nombre];
-            colacion = "";
-            clase = "turno-4"; 
-            turnoLabel = "Especial";
-        } else if (esPeriodoVerano && persona.nombre !== '-----') {
-            turnoLabel = 'Verano';
-            horario = detallesTurnos['Verano'][diaDeLaSemanaStr];
-            colacion = detallesTurnos['Verano'].colacion;
-            clase = "turno-2";
-        } else {
-            const turno = turnosDeLaSemana[pIndex];
-            turnoLabel = turno;
-            horario = detallesTurnos[turno][diaDeLaSemanaStr];
-            colacion = detallesTurnos[turno].colacion;
-            clase = `turno-${turno.replace('T', '')}`;
-        }
-
-        if (horario === 'Suspendido') {
-            clase = 'turno-suspendido';
-        }
+        const turno = turnosDeLaSemana[pIndex];
+        let horario = detallesTurnos[turno][diaDeLaSemanaStr];
+        let colacion = detallesTurnos[turno].colacion;
+        let clase = `turno-${turno.replace('T', '')}`;
 
         shifts.push({
-            inicial: persona.inicial, nombre: persona.nombre, turno: turnoLabel,
+            inicial: persona.inicial, nombre: persona.nombre, turno: turno,
             horario: horario, colacion: colacion, clase: clase
         });
     });
 
-    // Asignación de turnos fijos (Nicolás)
     personasFijas.forEach(persona => {
         const turno = persona.turno;
         const horario = detallesTurnos[turno][diaDeLaSemanaStr];
@@ -146,8 +107,6 @@ function renderWeekCalendar() {
     const todasLasPersonas = [...personasRotativas.map(p => p.nombre), ...personasFijas.map(p => p.nombre)];
 
     todasLasPersonas.forEach(nombre => {
-        if (nombre === '-----') return;
-        
         let rowHtml = `<div class="grid-cell"><strong>${nombre}</strong></div>`;
         let mobileDaysHtml = '';
 
@@ -157,22 +116,26 @@ function renderWeekCalendar() {
             const shiftsDelDia = getShiftsForDay(diaActual);
             const s = shiftsDelDia.find(sh => sh.nombre === nombre);
 
-            const colHtml = (s.colacion && s.horario !== 'Libre' && s.horario !== '0h' && s.horario !== 'Suspendido') ? `<span class="colacion-text">Col: ${s.colacion}</span>` : '';
+            // LOGICA ETIQUETA MR
+            const labelMR = (s.turno === 'T3' && s.horario !== 'Libre') ? '<span class="label-mr">MR</span>' : '';
+            const colHtml = (s.colacion && s.horario !== 'Libre' && s.horario !== '0h') ? `<span class="colacion-text">Col: ${s.colacion}</span>` : '';
 
             rowHtml += `<div class="grid-cell">
-            <div class="shift-block ${s.clase}">
-                <span class="horario-text">${s.horario}</span>
-                ${colHtml}
-            </div>
-        </div>`;
+                <div class="shift-block ${s.clase}">
+                    <span class="horario-text">${s.horario}</span>
+                    ${colHtml}
+                    ${labelMR}
+                </div>
+            </div>`;
 
             mobileDaysHtml += `<div class="day-entry">
-            <strong>${diasSemanaCorta[i]} ${diaActual.getDate()}</strong>
-            <div class="day-entry-shift ${s.clase}">
-                <span>${s.horario}</span>
-                ${colHtml}
-            </div>
-        </div>`;
+                <strong>${diasSemanaCorta[i]} ${diaActual.getDate()}</strong>
+                <div class="day-entry-shift ${s.clase}">
+                    <span>${s.horario}</span>
+                    ${colHtml}
+                    ${labelMR}
+                </div>
+            </div>`;
         }
         shiftsGrid.innerHTML += `<div class="grid-row">${rowHtml}</div>`;
         mobileView.innerHTML += `<div class="person-card"><div class="person-header">${nombre}</div><div class="days-list">${mobileDaysHtml}</div></div>`;
@@ -199,19 +162,22 @@ function renderMonthCalendar() {
         const dayShifts = getShiftsForDay(currentDay);
         let shiftsHtml = '';
         dayShifts.forEach(s => {
-            if (s.horario !== 'Libre' && s.horario !== '0h' && s.horario !== 'Suspendido' && s.nombre !== '-----') {
-                shiftsHtml += `<div class="mini-shift ${s.clase}">${s.inicial}: ${s.horario}</div>`;
+            if (s.horario !== 'Libre' && s.horario !== '0h') {
+                // LOGICA ETIQUETA MR MINI
+                const labelMR = (s.turno === 'T3') ? ' <span class="label-mr-mini">(MR)</span>' : '';
+                shiftsHtml += `<div class="mini-shift ${s.clase}">${s.inicial}: ${s.horario}${labelMR}</div>`;
             }
         });
 
         grid.innerHTML += `<div class="day-cell ${esOtroMes ? 'other-month' : ''}">
-        <div class="day-number">${currentDay.getDate()}</div>
-        <div class="shifts-in-day">${shiftsHtml}</div>
-    </div>`;
+            <div class="day-number">${currentDay.getDate()}</div>
+            <div class="shifts-in-day">${shiftsHtml}</div>
+        </div>`;
         currentDay.setDate(currentDay.getDate() + 1);
     }
 }
 
+// Listeners de los botones (mantener igual que antes)
 document.getElementById('toggleWeek').addEventListener('click', () => {
     document.getElementById('toggleWeek').classList.add('active');
     document.getElementById('toggleMonth').classList.remove('active');
