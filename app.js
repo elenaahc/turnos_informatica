@@ -9,7 +9,7 @@ const fechaInicioCiclo = new Date('2026-05-18T00:00:00');
 const personasRotativas = [
     { nombre: 'Elena', inicial: 'E' }, // Tomará el primer turno del arreglo (T1)
     { nombre: 'Francisca', inicial: 'F' }, // Tomará el segundo turno del arreglo (T2)
-    { nombre: 'Nicolás', inicial: 'N' } // Tomará el tercer turno del arreglo (T3)
+    { nombre: 'Nicolás', inicial: 'N' }, // Tomará el tercer turno del arreglo (T3)
     { nombre: 'Harold', inicial: 'H' },    // Tomará el cuarto turno del arreglo (T4)
         
       
